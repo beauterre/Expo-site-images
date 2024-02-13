@@ -124,42 +124,6 @@
         <!-- Add more filter buttons as needed -->
     </div>
     <div id="gallery">
-        <li class="image-container nature">
-            <img src="test.jpg" alt="Nature">
-            <div class="overlay"><span>Nature</span></div>
-        </li>
-        <li class="image-container city">
-            <img src="test.jpg" alt="City">
-            <div class="overlay"><span>City</span></div>
-        </li>
-        <li class="image-container nature">
-            <img src="test.jpg" alt="Nature">
-            <div class="overlay"><span>Nature</span></div>
-        </li>
-        <li class="image-container city">
-            <img src="test.jpg" alt="City">
-            <div class="overlay"><span>City</span></div>
-        </li>
-        <li class="image-container nature">
-            <img src="test.jpg" alt="Nature">
-            <div class="overlay"><span>Nature</span></div>
-        </li>
-        <li class="image-container city">
-            <img src="test.jpg" alt="City">
-            <div class="overlay"><span>City</span></div>
-        </li>
-        <li class="image-container nature">
-            <img src="test.jpg" alt="Nature">
-            <div class="overlay"><span>Nature</span></div>
-        </li>
-        <li class="image-container city">
-            <img src="test.jpg" alt="City">
-            <div class="overlay"><span>City</span></div>
-        </li>
-        <li class="image-container nature">
-            <img src="test.jpg" alt="Nature">
-            <div class="overlay"><span>Nature</span></div>
-        </li>
         <li class="image-container city">
             <img src="test.jpg" alt="City">
             <div class="overlay"><span>City</span></div>
@@ -177,6 +141,41 @@
     <script>
         let selectedImages = [];
         let currentFilter = 'all';
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const gallery = document.getElementById('gallery');
+
+    // Fetch images from Lorem Picsum
+    fetch('https://picsum.photos/v2/list?page=1&limit=10') // Change limit as needed
+        .then(response => response.json())
+        .then(data => {
+            // Populate the gallery with images
+            data.forEach(image => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('image-container');
+
+                const img = document.createElement('img');
+                img.src = image.download_url;
+                img.alt = 'Image';
+                listItem.appendChild(img);
+
+                const overlay = document.createElement('div');
+                overlay.classList.add('overlay');
+                overlay.innerHTML = `<span>${image.author}</span>`; // Use author name as overlay text
+                listItem.appendChild(overlay);
+
+                listItem.addEventListener('click', () => toggleSelection(img));
+
+                gallery.appendChild(listItem);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching images:', error);
+        });
+});
+
 
         function toggleFilter(category) {
             const filterButton = document.querySelector(`.filter-button[data-category="${category}"]`);
@@ -198,9 +197,11 @@
                 });
 
                 // Show images of the selected category
-                document.querySelectorAll(`.${category}`).forEach(container => {
-                    container.style.display = 'block';
-                });
+                document.querySelectorAll('.image-container').forEach(container => {
+    if (container.classList.contains(category)) {
+        container.style.display = 'block';
+    }
+});
             }
 
             updateDownloadButton();
